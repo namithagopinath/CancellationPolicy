@@ -57,10 +57,10 @@ const AddCancellationPolicy = () => {
     const handleRuleChange = event => {
         const { name, value } = event.target;
         setRule({ ...rule, [name]: value, key: Date.now() });
-        const newRule = { ...rule };
-        const newRules = [...policy.rules, newRule];
+        //const newRule = { ...rule };
+        //const newRules = [...policy.rules, newRule];
         //Check this setPolicy again
-        setPolicy({ ...policy, rules: newRules });
+        //setPolicy({ ...policy, rules: newRules });
     };
 
     const deleteRule = (key) => {
