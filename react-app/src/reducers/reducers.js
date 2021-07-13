@@ -13,26 +13,32 @@ function policyReducer(policies = initialState, action) {
     const { type, payload } = action;
 
     switch (type) {
+
+        case RETRIEVE_POLICY:
+            console.log("Inside Reducer", JSON.parse(JSON.stringify(payload)))
+            return JSON.parse(JSON.stringify(payload));
+
+
         case CREATE_POLICY:
             //adding new policy to policies using spread opeator in arrays
-            return [...policies, payload];
+            return (policies.concat(JSON.parse(JSON.stringify(payload))));
 
         case UPDATE_POLICY:
+            //Check again the deep copy
             return policies.map((policy) => {
                 if (policy.id === payload.id) {
-                    return { ...policy, ...payload }
+                    policy = { ...policy, ...payload }
+                    //return { ...policy, [rules] : {...payload.rules} }
+                    return ({ ...policy, ...payload });
                 }
                 return policy;
             });
 
-        case RETRIEVE_POLICY:
-            return payload;
-
         case DELETE_POLICY:
-            return policies.filter(({id}) => id !== payload.id);
+            return policies.filter(({ id }) => id !== payload.id);
 
         default:
-            return policies;
+            return JSON.parse(JSON.stringify(policies));
     }
 };
 

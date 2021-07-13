@@ -1,50 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     retrievePolicy,
 } from "../actions/actioncreator";
 import data from "../data.json";
-import { Link } from "react-router-dom";
-import { faAngleRight, faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import CancellationPolicy from "./CancellationPolicy";
 import { Table } from 'react-bootstrap';
 
 const CancellationPolicyList = () => {
 
-    const [showRules, setShowRules] = useState(false);
-    const [icon, setIcon] = useState("faAngleRight")
-    const policies = useSelector(state => state.policies);/*data;*/
     const dispatch = useDispatch();
+    const policyList = useSelector((state) => { return state.policies });
 
-
-    //wHY empty array ?
     useEffect(() => {
+        console.log("dispatched");
         dispatch(retrievePolicy());
-    }, []);
+    }, [dispatch]);
 
-
-    const handleArrowClick = () => {
-        if (icon === "faAngleRight") {
-            setIcon("faAngleDown");
-            setShowRules(true);
-        } else {
-            setIcon("faAngleRight");
-            setShowRules(false);
-        }
-    }
-
-    //UI Part add search
-    //UI Part add search
     return (
         <div>
-            <h5>Cancellation Policy Table</h5>
-            {policies ? (
-
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel-body">
+            <h5 onClick={() => { console.log("policiesList from useState", policyList) }}>Cancellation Policy Table</h5>
+            {/*Check if policies is null if null display table empyt*/}
+            {data.policies ? (
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="panel-body">
                                 <Table bordered>
                                     <thead>
                                         <tr style={{ textAlign: "center" }}>
@@ -60,10 +41,9 @@ const CancellationPolicyList = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {policies.map((policy) => {
-                                            console.log(policy);
+                                        {data.policies.map((policy) => {
                                             return (
-                                                <CancellationPolicy policy={policy} />
+                                                <CancellationPolicy policy={policy} key={policy.policyId}/>
                                             );
                                         })
                                         }
