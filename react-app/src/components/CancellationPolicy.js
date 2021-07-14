@@ -49,6 +49,9 @@ const CancellationPolicy = (props) => {
                 console.log(error);
             });
     };
+    const updatePolicy = () =>{
+        
+    }
 
     return (<>
         <tr>

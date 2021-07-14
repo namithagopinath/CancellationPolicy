@@ -38,7 +38,7 @@ const AddCancellationPolicy = () => {
     const [policy, setPolicy] = useState(intialPolicyState);
     const [addedPolicy, setAddedPolicy] = useState(false);
     const [showRule, setShowRule] = useState(false);
-    const [message, setMessage] = useState("");
+    
 
 
     //To dispatch action to the store
@@ -51,6 +51,7 @@ const AddCancellationPolicy = () => {
         const newRules = [...policy.rules, newRule];
         //Check this setPolicy again
         setPolicy({ ...policy, rules: newRules });
+        console.log("Rule Created",newRules);
         setRule(intialRuleState);
     }
 
@@ -70,10 +71,25 @@ const AddCancellationPolicy = () => {
             ...policy, rules: filteredRules
         })
     }
+    const resetRule=()=>{
+        setRule(intialRuleState);
+    }
 
-    const updateRule = (rule, key) => {
+    /*const updateRule = (rule, key) => {
         console.log(rule);
         console.log(key);
+    }*/
+    const updateRule = (event, key) => {
+        const { name, value } = event.target;
+        const rules = JSON.parse(JSON.stringify(policy.rules));
+        const updatedRules = rules.map(item => {
+            var temp = Object.assign({}, item);
+            if (temp.key === key) {
+                return { ...temp, [name]: value }
+            }
+            return temp;
+        });
+        setPolicy({ ...policy, rules: updatedRules })
     }
 
     /*const updateRule = (rule, key) => {
@@ -115,9 +131,9 @@ const AddCancellationPolicy = () => {
     const saveCancellationPolicy = (event) => {
         //Value added to the DB and the policy that was returned in the response is used to setPolicy
         event.preventDefault();
-        policy.rules.map(rule => delete rule.key);
-        console.log(policy);
-        console.log(policy.rule)
+        //policy.rules.map(rule => delete rule.key);
+       //console.log(policy);
+        //console.log(policy.rule)
         dispatch(createCancellationPolicy(policy)).then(data => {
             setPolicy(JSON.parse(JSON.stringify(data)));
             setAddedPolicy(true);

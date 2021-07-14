@@ -60,12 +60,12 @@ const UpdateCancellationPolicy = (props) => {
         })
     }
 
-    const updateRule = (rule, key) => {
+    /*const updateRule = (rule, key) => {
         console.log(rule);
         console.log(key);
-    }
+    }*/
 
-    /*const updateRule = (rule, key) => {
+    const updateRule = (rule, key) => {
         console.log("Rules:" + policy.rules);
         const updateRules = { ...policy.rules }
         updateRules.map(item => {
@@ -81,7 +81,7 @@ const UpdateCancellationPolicy = (props) => {
         })
         //Check this setting of policy's rules
         setPolicy({...policy,rules:updateRules})
-    }*/
+    }
     //handle change in the input and update the policy 
 
     const handleInputChange = event => {
