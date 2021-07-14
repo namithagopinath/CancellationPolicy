@@ -49,41 +49,35 @@ public ResponseEntity<ExpediaRules> addExpediaRules(@RequestBody ExpediaRules ne
     try {
         List<ExpediaRules> expediaRules = newRule.getPolicy();
         expediaRules.forEach((rule) ->{
-            rule.setPolicy(newRule);
+            rule.setRules(newRule);
         });
-        newRule.setPolicy(expediaRules);
-        ExpediaRules addedPolicy = expediaRuleRepository.save(newRule);
+        newRule.setRules(expediaRules);
+        ExpediaRules addedRules = expediaRuleRepository.save(newRule);
 
-        return new ResponseEntity<>(addedPolicy, HttpStatus.CREATED);
+        return new ResponseEntity<>(addedRules, HttpStatus.CREATED);
     } catch (Exception exception) {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-}
-
-
-
-
-
-
+}*/
 
 
     @PutMapping("/cancellationpolicies/{id}")
-    public ResponseEntity<ExpediaRules> updateExpediaRules(@PathVariable("id") long policyId, @RequestBody ExpediaRules updatesPolicy) {
-        Optional<ExpediaRules> policy = cancellationPolicyRepository.findById(policyId).map((selectedPolicy) ->{
-            selectedPolicy.setPolicyId(updatesPolicy.getPolicyId());
-            selectedPolicy.setPolicyName(updatesPolicy.getPolicyName());
-            selectedPolicy.setPolicySource(updatesPolicy.getPolicySource());
-            selectedPolicy.setPolicyDescription(updatesPolicy.getPolicyDescription());
-            selectedPolicy.setPolicyUpdatedBy(updatesPolicy.getPolicyUpdatedBy());
-            selectedPolicy.setPolicyUpdatedOn(updatesPolicy.getPolicyUpdatedOn());
-            selectedPolicy.setPolicyCancelRestrictionDays(updatesPolicy.getPolicyCancelRestrictionDays());
-            selectedPolicy.setPolicyCancelRestrictionHours(updatesPolicy.getPolicyCancelRestrictionHours());
-            selectedPolicy.setRules(updatesPolicy.getRules());
-            return expediaRuleRepository.save(selectedPolicy);
+    public ResponseEntity<ExpediaRules> updateExpediaRules(@PathVariable("id") long ruleId, @RequestBody ExpediaRules updatesRule) {
+        Optional<ExpediaRules> rule = expediaRuleRepository.findById(ruleId).map((selectedRules) ->{
+            selectedRules.setRuleId(updatesRule.getRuleId());
+            selectedRules.setOffsetHours(updatesRule.getOffsetHours());
+            selectedRules.setOffsetDays(updatesRule.getOffsetDays());
+            selectedRules.setFeeBasis(updatesRule.getFeeBasis());
+            selectedRules.setValue(updatesRule.getValue());
+            selectedRules.setCurrency(updatesRule.getCurrency());
+            selectedRules.setNoShow(updatesRule.isNoShow());
+
+            selectedRules.setPolicy(updatesRule.getPolicy());
+            return expediaRuleRepository.save(selectedRules);
         });
-        if (policy.isPresent()) {
-            ExpediaRules updatedPolicy = policy.get();
-            return new ResponseEntity<>(updatedPolicy, HttpStatus.OK);
+        if (rule.isPresent()) {
+            ExpediaRules updatedRule = rule.get();
+            return new ResponseEntity<>(updatedRule, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -92,15 +86,18 @@ public ResponseEntity<ExpediaRules> addExpediaRules(@RequestBody ExpediaRules ne
 
 
     @DeleteMapping("/cancellationpolicies/{id}")
-    public ResponseEntity<HttpStatus> deleteExpediaRules(@PathVariable("id") long policyId) {
+    public ResponseEntity<HttpStatus> deleteExpediaRules(@PathVariable("id") long ruleId) {
         try {
-            expediaRuleRepository.deleteById(policyId);
+            expediaRuleRepository.deleteById(ruleId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-    }*/
+
+    }
+
+    }
 
 
 
