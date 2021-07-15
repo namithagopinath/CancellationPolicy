@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,7 @@ public class CancellationPolicyController {
         }
     }
 
+
     @GetMapping("/cancellationpolicies")
     public ResponseEntity<List<CancellationPolicy>> getAllCancellationPolicies(@RequestParam(required = false) String title) {
         try {
@@ -54,6 +56,7 @@ public class CancellationPolicyController {
         }
     }
 
+
     @GetMapping("/cancellationpolicies/{id}")
     public ResponseEntity<CancellationPolicy> getAllCancellationPolicyById(@PathVariable("id") long policyId) {
         Optional<CancellationPolicy> policy = cancellationPolicyRepository.findById(policyId);
@@ -64,6 +67,7 @@ public class CancellationPolicyController {
         }
     }
 
+    
     @PutMapping("/cancellationpolicies/{id}")
     public ResponseEntity<CancellationPolicy> updateCancellationPolicy(@PathVariable("id") long policyId, @RequestBody CancellationPolicy updatesPolicy) {
         Optional<CancellationPolicy> policy = cancellationPolicyRepository.findById(policyId).map((selectedPolicy) ->{
@@ -72,10 +76,11 @@ public class CancellationPolicyController {
             selectedPolicy.setPolicySource(updatesPolicy.getPolicySource());
             selectedPolicy.setPolicyDescription(updatesPolicy.getPolicyDescription());
             selectedPolicy.setPolicyUpdatedBy(updatesPolicy.getPolicyUpdatedBy());
-            selectedPolicy.setPolicyUpdatedOn(updatesPolicy.getPolicyUpdatedOn());
+            selectedPolicy.setPolicyUpdatedOn(LocalDateTime.now());
             selectedPolicy.setPolicyCancelRestrictionDays(updatesPolicy.getPolicyCancelRestrictionDays());
             selectedPolicy.setPolicyCancelRestrictionHours(updatesPolicy.getPolicyCancelRestrictionHours());
-            selectedPolicy.setRules(updatesPolicy.getRules());
+            selectedPolicy.getRules().clear();
+            selectedPolicy.getRules().addAll(updatesPolicy.getRules());
             return cancellationPolicyRepository.save(selectedPolicy);
         });
         if (policy.isPresent()) {
@@ -96,5 +101,6 @@ public class CancellationPolicyController {
         }
 
     }
+
 
 }
