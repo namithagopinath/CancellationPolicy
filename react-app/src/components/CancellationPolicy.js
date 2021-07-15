@@ -4,12 +4,14 @@ import { updatePolicy, deletePolicy } from "../actions/actioncreator";
 import { useHistory } from "react-router-dom";
 import { faAngleRight, faAngleDown, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import UpdateCancellationPolicy from "./UpdateCancellationPolicy";
+
 
 
 const CancellationPolicy = (props) => {
 
     const [policy, setPolicy] = useState(JSON.parse(JSON.stringify(props.policy)));
-    const [message, setMessage] = useState("");
+    const [updatePolicy, setUpdatedPolicy] = useState(false);
     const [showRules, setShowRules] = useState(false);
     const [icon, setIcon] = useState("faAngleRight");
 
@@ -26,8 +28,14 @@ const CancellationPolicy = (props) => {
             setShowRules(false);
         }
     }
+    const handleEditClick=()=>{
+        setUpdatedPolicy(true);
+    }
+    const cancelUpdate=()=>{
+        setUpdatedPolicy(false);
+    }
 
-     const updateContent = () => {
+     /*const updateContent = () => {
         dispatch(updatePolicy(policy.policyId, policy))
             .then(response => {
                 console.log(response);
@@ -36,7 +44,7 @@ const CancellationPolicy = (props) => {
             .catch(error => {
                 console.log(error);
             });
-    };
+    };*/
 
     const removePolicy = (policy) => {
         console.log(policy.policyId);
@@ -49,9 +57,7 @@ const CancellationPolicy = (props) => {
                 console.log(error);
             });
     };
-    const updatePolicy = () =>{
-        
-    }
+    
 
     return (<>
         <tr>
@@ -64,7 +70,7 @@ const CancellationPolicy = (props) => {
             <td>{policy.policyUpdatedBy}</td>
             <td>{policy.policyUpdatedOn}</td>
             <td><span>
-               <FontAwesomeIcon onClick={handleArrowClick} icon={faEdit} />
+               <FontAwesomeIcon onClick={handleEditClick} icon={faEdit} />
                {'      '}
                <FontAwesomeIcon onClick={() => removePolicy(policy)} icon={faTrash} />
             </span></td>
@@ -104,6 +110,11 @@ const CancellationPolicy = (props) => {
                     </table>
                 </td>
                 )
+            }
+            {
+               updatePolicy && (<td style={{ backgroundColor: "#dad5de" }} colSpan="9"><UpdateCancellationPolicy policy={policy} cancelUpdate={cancelUpdate} /></td>)
+
+  
             }
         </tr>
     </>
