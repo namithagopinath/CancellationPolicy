@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import useForm from './customhooks';
+import validate from './validate';
 
 const AddCancellationPolicy = () => {
     const intialPolicyState = {
@@ -38,11 +40,19 @@ const AddCancellationPolicy = () => {
     const [policy, setPolicy] = useState(intialPolicyState);
     const [addedPolicy, setAddedPolicy] = useState(false);
     const [showRule, setShowRule] = useState(false);
+    /*const {inputs, handleInputChange, handleSubmit} = useForm({email:'',password:''});
+    const [errors,setErrors] = useState(intialPolicyState);*/
     
 
 
     //To dispatch action to the store
     const dispatch = useDispatch();
+    
+
+
+
+
+  
 
     //handle change in the input and update the rule
     const createRule = (event) => {
@@ -148,6 +158,8 @@ const AddCancellationPolicy = () => {
         setAddedPolicy(false);
         setRule(intialRuleState);
     };
+   
+    
 
     return (
 
@@ -163,7 +175,7 @@ const AddCancellationPolicy = () => {
                 </div>)}
 
             {/*Add Policy Form (including ruleset for the Expedia policy Source*/}
-            <form className="d-grid gap-3">
+            <form className="d-grid gap-3" /*onSubmit={handleSubmit}*/ >
                 <Card bg="light">
                     <Card.Body>
                         <div className="container">
@@ -179,7 +191,13 @@ const AddCancellationPolicy = () => {
                                             value={policy.policyName}
                                             onChange={handleInputChange}
                                             name="policyName"
-                                        />
+                                           
+                                            />
+                                           
+        
+                                            
+                                        
+                                        
                                         <label htmlFor="policyName">Policy Name</label>
                                     </div>
                                 </div>
@@ -194,6 +212,7 @@ const AddCancellationPolicy = () => {
                                             value={policy.policyDescription}
                                             onChange={handleInputChange}
                                             name="policyDescription"
+                                           
                                         />
                                         <label htmlFor="policyDescription">Policy Description</label>
                                     </div>
