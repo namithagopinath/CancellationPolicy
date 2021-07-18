@@ -10,7 +10,7 @@ import { Table } from 'react-bootstrap';
 const CancellationPolicyList = () => {
 
     const dispatch = useDispatch();
-    const policyList = useSelector((state) => { return state.policies });
+    const policyList = useSelector((state) => state.policyReducer );
 
     useEffect(() => {
         console.log("dispatched");
