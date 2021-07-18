@@ -1,6 +1,6 @@
 import { Card } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { createCancellationPolicy } from "../actions/actioncreator";
 import RuleList from "./RuleList";
@@ -8,8 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import useForm from './customhooks';
-import validate from './validate';
+
+import validate from '../services/validateForm';
+
 
 const AddCancellationPolicy = () => {
     const intialPolicyState = {
@@ -47,6 +48,21 @@ const AddCancellationPolicy = () => {
 
     //To dispatch action to the store
     const dispatch = useDispatch();
+
+    //To validate form 
+    const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    //For form Validation
+    useEffect(
+        () => {
+            if (Object.keys(errors).length === 0 && isSubmitting) {
+                console.log("In UseEffect");
+                saveCancellationPolicy();
+            }
+        },
+        [errors]
+    );
     
 
 
@@ -85,10 +101,7 @@ const AddCancellationPolicy = () => {
         setRule(intialRuleState);
     }
 
-    /*const updateRule = (rule, key) => {
-        console.log(rule);
-        console.log(key);
-    }*/
+    
     const updateRule = (event, key) => {
         const { name, value } = event.target;
         const rules = JSON.parse(JSON.stringify(policy.rules));
@@ -158,11 +171,16 @@ const AddCancellationPolicy = () => {
         setAddedPolicy(false);
         setRule(intialRuleState);
     };
+    const handleSubmit = event => {
+        event.preventDefault();
+        setErrors(validate(policy));
+        setIsSubmitting(true);
+    };
+
    
     
 
     return (
-
         <div>
             <div className="alert alert-primary" role="alert">
                 Add Car Rental Cancellation Policy
@@ -175,7 +193,7 @@ const AddCancellationPolicy = () => {
                 </div>)}
 
             {/*Add Policy Form (including ruleset for the Expedia policy Source*/}
-            <form className="d-grid gap-3" /*onSubmit={handleSubmit}*/ >
+            <form className="d-grid gap-3" noValidate>
                 <Card bg="light">
                     <Card.Body>
                         <div className="container">
@@ -185,20 +203,22 @@ const AddCancellationPolicy = () => {
                                     <div className="form-floating">
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={
+                                                (errors.policyName)
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"
+                                            }
                                             id="policyName"
                                             required
                                             value={policy.policyName}
                                             onChange={handleInputChange}
                                             name="policyName"
-                                           
-                                            />
-                                           
-        
-                                            
-                                        
-                                        
+                                            placeholder="Enter Policy Name"
+                                        />
                                         <label htmlFor="policyName">Policy Name</label>
+                                        <div className="invalid-feedback">
+                                            Enter policy Name
+                                        </div>
                                     </div>
                                 </div>
 
@@ -206,15 +226,21 @@ const AddCancellationPolicy = () => {
                                     <div className="form-floating">
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={
+                                                (errors.policyDescription)
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"
+                                            }
                                             id="policyDescription"
                                             required
                                             value={policy.policyDescription}
                                             onChange={handleInputChange}
                                             name="policyDescription"
-                                           
                                         />
                                         <label htmlFor="policyDescription">Policy Description</label>
+                                        <div className="invalid-feedback">
+                                            Enter policy Description
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -230,12 +256,22 @@ const AddCancellationPolicy = () => {
                             <div className="row ">
                                 <div className="col-auto">
                                     <div className="form-floating selectpicker">
-                                        <select className="form-select" id="policySource" name="policySource" onChange={handlePolicySource}>
+                                        <select
+                                            className={
+                                                (errors.policyName)
+                                                    ? "form-select is-invalid"
+                                                    : "form-select"
+                                            }
+                                            value={policy.policySource} id="policySource" name="policySource"
+                                            onChange={(event) => { handlePolicySource(event); handleInputChange(event); }}>
                                             <option value=" ">Select Source</option>
                                             <option value="expedia">Expedia</option>
                                             <option value="provider">Provider</option>
                                         </select>
                                         <label htmlFor="policySource">Policy Source</label>
+                                        <div className="invalid-feedback">
+                                            Select Policy Source
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -298,19 +334,19 @@ const AddCancellationPolicy = () => {
                                             </div>
                                             <div className="col">
                                                 <div className="form-floating selectpicker">
-                                                    <select className="form-select" id="curreny" name="curreny" onChange={handleRuleChange}>
+                                                    <select value={rule.currency} className="form-select" id="currency" name="currency" onChange={handleRuleChange}>
                                                         {/*selected changed to value = ""*/}
-                                                        <option value="">Select</option>
+                                                        <option value=" ">Select</option>
                                                         <option value="USD">USD</option>
                                                         <option value="INR">INR</option>
                                                     </select>
-                                                    <label htmlFor="curreny">Curreny</label>
+                                                    <label htmlFor="currency">Currency</label>
                                                 </div>
                                             </div>
                                             <div className="col">
                                                 <div className="form-floating selectpicker">
-                                                    <select className="form-select" id="noShow" name="noShow" onChange={handleRuleChange}>
-                                                        <option value="">Select</option>
+                                                    <select value={rule.noShow} className="form-select" id="noShow" name="noShow" onChange={handleRuleChange}>
+                                                        <option value=" ">Select</option>
                                                         <option value="NO">NO</option>
                                                         <option value="YES">YES</option>
                                                     </select>
@@ -318,7 +354,7 @@ const AddCancellationPolicy = () => {
                                                 </div>
                                             </div>
                                             <div className="col-md-auto my-auto">
-                                                <FontAwesomeIcon onClick={deleteRule} icon={faTrash} />
+                                                <FontAwesomeIcon onClick={resetRule} icon={faTrash} />
                                             </div>
                                         </div>
                                         <div className="row row-cols-1">
@@ -379,7 +415,7 @@ const AddCancellationPolicy = () => {
                 </div>
                 <div className="row row-cols-1">
                     <div className="col">
-                        <button onClick={saveCancellationPolicy} className="btn btn-primary btn-sm float-end ">
+                        <button onClick={handleSubmit} className="btn btn-primary btn-sm float-end ">
                             Add Policy  </button>
                     </div>
                 </div>

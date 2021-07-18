@@ -1,6 +1,4 @@
 import React from "react";
-import "./sidebar.css";
-import SideBar from "./components/SideBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   BrowserRouter as Router,
@@ -22,7 +20,7 @@ export default function App() {
   return (
 
     <Router>
-      { /*<SideBar />*/}
+      
 
       <nav className="navbar navbar-expand navbar-dark bg-dark ">
         <a href="/" className="navbar-brand">
