@@ -9,28 +9,25 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCar,
-
 } from "@fortawesome/free-solid-svg-icons";
 
 import AddCancellationPolicy from "./components/AddCancellationPolicy";
+import AddCancellationPolicyTest from "./components/AddCancellationPolicyTest";
 import CancellationPolicy from "./components/CancellationPolicy";
 import CancellationPolicyList from "./components/CancellationPolicyList";
 
 export default function App() {
   return (
-
     <Router>
-      
-
       <nav className="navbar navbar-expand navbar-dark bg-dark ">
         <a href="/" className="navbar-brand">
           <FontAwesomeIcon icon={faCar} />
           {`   `}Cars Admin Tool
-          </a>
-          
+        </a>
+
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
-            <Link to={"/cancellationpolicies"} className="nav-link">View  Policies</Link>
+            <Link to={"/cancellationpolicies"} className="nav-link">View Policies</Link>
           </li>
           <li className="nav-item">
             <Link to={"/add"} className="nav-link">Add New Policy</Link>
@@ -40,8 +37,8 @@ export default function App() {
 
       <div className="container mt-3">
         <Switch>
-          <Route exact path={["/", "/cancellationpolicies"]} component={CancellationPolicyList} />
-          <Route exact path="/add" component={AddCancellationPolicy} />
+          <Route exact path="/cancellationpolicies" component={CancellationPolicyList} />
+          <Route exact path={["/", "/add"]} component={AddCancellationPolicyTest} />
           <Route path="/cancellationpolicies/:id" component={CancellationPolicy} />
         </Switch>
       </div>

@@ -1,6 +1,6 @@
 import { Card } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { createCancellationPolicy } from "../actions/actioncreator";
 import RuleList from "./RuleList";
@@ -11,13 +11,12 @@ import {
 
 import validate from '../services/validateForm';
 
-
 const AddCancellationPolicy = () => {
     const intialPolicyState = {
         policyId: 0,
         policyName: "Enter policy name",
         policyDescription: "Enter policy Descritpion",
-        policySource: "",
+        policySource: " ",
         policyCancelRestrictionDays: 0,
         policyCancelRestrictionHours: 0,
         policyUpdateBy: "",
@@ -31,7 +30,7 @@ const AddCancellationPolicy = () => {
         offSetHours: 0,
         feeBasis: "amount",
         value: 0,
-        curreny: " ",
+        currency: " ",
         noShow: " ",
         key: Date.now()
 
@@ -41,10 +40,6 @@ const AddCancellationPolicy = () => {
     const [policy, setPolicy] = useState(intialPolicyState);
     const [addedPolicy, setAddedPolicy] = useState(false);
     const [showRule, setShowRule] = useState(false);
-    /*const {inputs, handleInputChange, handleSubmit} = useForm({email:'',password:''});
-    const [errors,setErrors] = useState(intialPolicyState);*/
-    
-
 
     //To dispatch action to the store
     const dispatch = useDispatch();
@@ -63,31 +58,25 @@ const AddCancellationPolicy = () => {
         },
         [errors]
     );
-    
 
 
-
-
-  
-
-    //handle change in the input and update the rule
+    /*handle functions for Expedia rules */
     const createRule = (event) => {
         event.preventDefault();
         const newRule = { ...rule };
+        if (rule.noShow === "YES") {
+            newRule.offSetDays = 0;
+            newRule.offSetHours = 0;
+        }
         const newRules = [...policy.rules, newRule];
-        //Check this setPolicy again
         setPolicy({ ...policy, rules: newRules });
-        console.log("Rule Created",newRules);
+        console.log("Rule created", newRules);
         setRule(intialRuleState);
     }
 
     const handleRuleChange = event => {
         const { name, value } = event.target;
         setRule({ ...rule, [name]: value, key: Date.now() });
-        //const newRule = { ...rule };
-        //const newRules = [...policy.rules, newRule];
-        //Check this setPolicy again
-        //setPolicy({ ...policy, rules: newRules });
     };
 
     const deleteRule = (key) => {
@@ -97,42 +86,50 @@ const AddCancellationPolicy = () => {
             ...policy, rules: filteredRules
         })
     }
-    const resetRule=()=>{
+
+    const resetRule = () => {
         setRule(intialRuleState);
     }
 
-    
     const updateRule = (event, key) => {
         const { name, value } = event.target;
         const rules = JSON.parse(JSON.stringify(policy.rules));
         const updatedRules = rules.map(item => {
-            var temp = Object.assign({}, item);
+            let temp = Object.assign({}, item);
             if (temp.key === key) {
-                return { ...temp, [name]: value }
+                temp = { ...temp, [name]: value }
+                if (temp.noShow === "YES") {
+                    temp.offSetDays = 0;
+                    temp.offSetHours = 0;
+                }
+                return temp;
             }
+
             return temp;
         });
         setPolicy({ ...policy, rules: updatedRules })
     }
+    /* end handle functions for Expedia rules */
 
-    /*const updateRule = (rule, key) => {
-        console.log("Rules:" + policy.rules);
-        const updateRules = { ...policy.rules }
-        updateRules.map(item => {
-            if (item.key === key) {
-                    item.id = rule.id,
-                    item.offSetDays = rule.offSetDays,
-                    item.offSetHours = rule.offSetHours,
-                    item.feeBasis = "amount",
-                    item.value = rule.value,
-                    item.curreny = rule.curreny,
-                    item.noShow = rule.noShow
-            }
-        })
-        //Check this setting of policy's rules
-        setPolicy({...policy,rules:updateRules})
-    }*/
+
     //handle change in the input and update the policy 
+    const newCancellationPolicy = () => {
+        setPolicy(intialPolicyState);
+        setAddedPolicy(false);
+        setRule(intialRuleState);
+    };
+
+    const saveCancellationPolicy = () => {
+        //Value added to the DB and the policy that was returned in the response is used to setPolicy
+        console.log("Policy Added", policy);
+        dispatch(createCancellationPolicy(policy)).then(data => {
+            setPolicy(JSON.parse(JSON.stringify(data)));
+            setAddedPolicy(true);
+            console.log(data);
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
 
     const handleInputChange = event => {
         const { name, value } = event.target;
@@ -151,34 +148,15 @@ const AddCancellationPolicy = () => {
         }
     };
 
-    const saveCancellationPolicy = (event) => {
-        //Value added to the DB and the policy that was returned in the response is used to setPolicy
-        event.preventDefault();
-        //policy.rules.map(rule => delete rule.key);
-       //console.log(policy);
-        //console.log(policy.rule)
-        dispatch(createCancellationPolicy(policy)).then(data => {
-            setPolicy(JSON.parse(JSON.stringify(data)));
-            setAddedPolicy(true);
-            console.log(data);
-        }).catch((error) => {
-            console.log(error);
-        });
-    };
 
-    const newCancellationPolicy = () => {
-        setPolicy(intialPolicyState);
-        setAddedPolicy(false);
-        setRule(intialRuleState);
-    };
     const handleSubmit = event => {
         event.preventDefault();
         setErrors(validate(policy));
         setIsSubmitting(true);
     };
 
-   
-    
+
+
 
     return (
         <div>
@@ -258,7 +236,7 @@ const AddCancellationPolicy = () => {
                                     <div className="form-floating selectpicker">
                                         <select
                                             className={
-                                                (errors.policyName)
+                                                (errors.policySource)
                                                     ? "form-select is-invalid"
                                                     : "form-select"
                                             }
@@ -296,6 +274,7 @@ const AddCancellationPolicy = () => {
                                                         required
                                                         min="0"
                                                         value={rule.offSetDays}
+                                                        disabled={rule.noShow === "YES"}
                                                         onChange={handleRuleChange}
                                                         name="offSetDays"
                                                     />
@@ -311,6 +290,7 @@ const AddCancellationPolicy = () => {
                                                         required
                                                         min="0"
                                                         value={rule.offSetHours}
+                                                        disabled={rule.noShow === "YES"}
                                                         onChange={handleRuleChange}
                                                         name="offSetHours"
                                                     />
