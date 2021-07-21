@@ -1,7 +1,12 @@
 package com.ibs.training.casestudy.policycancellation.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,11 +39,29 @@ public class CancellationPolicy {
     private String policyUpdatedBy;
 
     @Column(name = "UPDATED_ON")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime policyUpdatedOn;
 
     @OneToMany(mappedBy = "policy" , fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExpediaRules> rules;
+
+    public CancellationPolicy(){
+    }
+
+    public CancellationPolicy(long policyId, String policyName, String policyDescription,
+                              String policySource, int policyCancelRestrictionDays, int policyCancelRestrictionHours,
+                              String policyUpdatedBy, LocalDateTime policyUpdatedOn) {
+        this.policyId = policyId;
+        this.policyName = policyName;
+        this.policyDescription = policyDescription;
+        this.policySource = policySource;
+        this.policyCancelRestrictionDays = policyCancelRestrictionDays;
+        this.policyCancelRestrictionHours = policyCancelRestrictionHours;
+        this.policyUpdatedBy = policyUpdatedBy;
+        this.policyUpdatedOn = policyUpdatedOn;
+
+    }
 
     public long getPolicyId() {
         return policyId;
